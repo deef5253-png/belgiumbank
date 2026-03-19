@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Belgium Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #003366;
+            --primary-light: #004080;
+            --secondary: #00a8e8;
+            --accent: #ffd700;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--danger);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-section {
+            padding: 15px 25px 5px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--accent);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-size: 1.75rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.blue {
+            background: #e3f2fd;
+            color: var(--primary);
+        }
+        
+        .stat-icon.green {
+            background: #d4edda;
+            color: var(--success);
+        }
+        
+        .stat-icon.orange {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .stat-icon.red {
+            background: #f8d7da;
+            color: var(--danger);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.75rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            width: 300px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .info-item {
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .masked {
+            filter: blur(4px);
+            transition: filter 0.3s;
+        }
+        
+        .masked:hover, .masked.revealed {
+            filter: none;
+        }
+        
+        .documents-list {
+            margin-top: 20px;
+        }
+        
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <span>Belgium Bank</span>
+            </div>
+            <div class="admin-badge">
+                <i class="fas fa-shield-alt"></i>
+                Administration
+            </div>
+        </div>
+        
+        <nav class="nav-menu">
+            <div class="nav-section">Menu Principal</div>
+            <div class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Tableau de bord</span>
+            </div>
+            <div class="nav-item" onclick="showSection('users')">
+                <i class="fas fa-users"></i>
+                <span>Clients</span>
+            </div>
+            <div class="nav-item" onclick="showSection('transfers')">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Virements</span>
+            </div>
+            
+            <div class="nav-section">Système</div>
+            <div class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section active">
+            <div class="header">
+                <h1>Tableau de bord</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualiser
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Clients inscrits</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingTransfers">0</h3>
+                        <p>Virements en attente</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-euro-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalBalance">0 €</h3>
+                        <p>Solde total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Users Section -->
+        <div id="users-section" class="content-section">
+            <div class="header">
+                <h1>Gestion des clients</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Liste des clients</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Rechercher un client..." id="userSearch" onkeyup="searchUsers()">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Email</th>
+                                <th>Compte</th>
+                                <th>Solde</th>
+                                <th>Statut</th>
+                                <th>Inscription</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 30px;">Chargement...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Transfers Section -->
+        <div id="transfers-section" class="content-section">
+            <div class="header">
+                <h1>Gestion des virements</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tous les virements</h3>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Bénéficiaire</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfersTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 30px;">Chargement...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- User Details Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Détails du client</h3>
+                <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" id="userSuccessAlert"></div>
+                <div class="alert alert-danger" id="userErrorAlert"></div>
+                
+                <div class="info-grid" id="userDetails">
+                    <!-- Dynamically filled -->
+                </div>
+                
+                <div class="documents-list" id="userDocuments">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Documents</h4>
+                    <!-- Dynamically filled -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('userModal')">Fermer</button>
+                <button class="btn btn-success" id="verifyBtn" onclick="verifyUser()">
+                    <i class="fas fa-check"></i>
+                    Vérifier le compte
+                </button>
+                <button class="btn btn-primary" onclick="openCreditModal()">
+                    <i class="fas fa-plus"></i>
+                    Créditer le compte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Modal -->
+    <div class="modal" id="creditModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Créditer le compte</h3>
+                <button class="modal-close" onclick="closeModal('creditModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" id="creditSuccessAlert"></div>
+                <div class="alert alert-danger" id="creditErrorAlert"></div>
+                
+                <div class="form-group">
+                    <label>Montant (EUR)</label>
+                    <input type="number" id="creditAmount" class="form-control" placeholder="0.00" step="0.01" min="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="creditDescription" class="form-control" placeholder="Raison du crédit">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('creditModal')">Annuler</button>
+                <button class="btn btn-success" onclick="creditAccount()">
+                    <i class="fas fa-check"></i>
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Action Modal -->
+    <div class="modal" id="transferActionModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Traiter le virement</h3>
+                <button class="modal-close" onclick="closeModal('transferActionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" id="transferSuccessAlert"></div>
+                <div class="alert alert-danger" id="transferErrorAlert"></div>
+                
+                <div id="transferDetails" style="margin-bottom: 20px;">
+                    <!-- Dynamically filled -->
+                </div>
+                
+                <div class="form-group" id="rejectionReasonGroup" style="display: none;">
+                    <label>Motif du refus</label>
+                    <textarea id="rejectionReason" class="form-control" placeholder="Indiquez la raison du refus..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('transferActionModal')">Annuler</button>
+                <button class="btn btn-danger" onclick="showRejectionReason()">
+                    <i class="fas fa-times"></i>
+                    Refuser
+                </button>
+                <button class="btn btn-success" onclick="approveTransfer()">
+                    <i class="fas fa-check"></i>
+                    Approuver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://5000-dae256e2-ed1e-4f15-9078-0dfb3e01cf27.daytonaproxy01.net/api';
+        let currentAdmin = null;
+        let selectedUserId = null;
+        let selectedTransferId = null;
+        let allUsers = [];
+        let allTransfers = [];
+        
+        // Check auth
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            currentAdmin = JSON.parse(localStorage.getItem('admin') || '{}');
+            return token;
+        }
+        
+        // Load stats
+        async function loadStats() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('totalUsers').textContent = stats.totalUsers;
+                    document.getElementById('pendingTransfers').textContent = stats.pendingTransfers;
+                    document.getElementById('totalBalance').textContent = `${stats.totalBalance.toFixed(2)} €`;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        // Load users
+        async function loadUsers() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    allUsers = await response.json();
+                    displayUsers(allUsers);
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTable');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">Aucun client</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td><strong>${u.lastName}</strong> ${u.firstName}</td>
+                    <td>${u.email}</td>
+                    <td>${u.accountNumber}</td>
+                    <td>${parseFloat(u.balance || 0).toFixed(2)} €</td>
+                    <td><span class="status ${u.isActive ? 'status-active' : 'status-inactive'}">${u.isActive ? 'Actif' : 'En attente'}</span></td>
+                    <td>${new Date(u.createdAt).toLocaleDateString('fr-BE')}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn btn-primary btn-sm btn-icon" onclick="viewUser(${u.id})" title="Voir détails">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function searchUsers() {
+            const query = document.getElementById('userSearch').value.toLowerCase();
+            const filtered = allUsers.filter(u => 
+                u.firstName.toLowerCase().includes(query) ||
+                u.lastName.toLowerCase().includes(query) ||
+                u.email.toLowerCase().includes(query)
+            );
+            displayUsers(filtered);
+        }
+        
+        // Load transfers
+        async function loadTransfers() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/transfers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    allTransfers = await response.json();
+                    displayTransfers(allTransfers);
+                }
+            } catch (error) {
+                console.error('Error loading transfers:', error);
+            }
+        }
+        
+        function displayTransfers(transfers) {
+            const tbody = document.getElementById('transfersTable');
+            
+            if (transfers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">Aucun virement</td></tr>';
+                return;
+            }
+            
+            const getStatusClass = (s) => {
+                const map = {
+                    'en_attente': 'status-pending',
+                    'en_cours': 'status-pending',
+                    'valide': 'status-active',
+                    'refuse': 'status-inactive'
+                };
+                return map[s] || '';
+            };
+            
+            const getStatusLabel = (s) => {
+                const map = {
+                    'en_attente': 'En attente',
+                    'en_cours': 'En cours',
+                    'valide': 'Validé',
+                    'refuse': 'Refusé'
+                };
+                return map[s] || s;
+            };
+            
+            tbody.innerHTML = transfers.map(t => `
+                <tr>
+                    <td><code>${t.reference}</code></td>
+                    <td>${new Date(t.createdAt).toLocaleDateString('fr-BE')}</td>
+                    <td>${t.fromUser}</td>
+                    <td>${t.beneficiaryName}</td>
+                    <td><strong>${parseFloat(t.amount).toFixed(2)} €</strong></td>
+                    <td><span class="status ${getStatusClass(t.status)}">${getStatusLabel(t.status)}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            ${t.status === 'en_attente' ? `
+                                <button class="btn btn-success btn-sm btn-icon" onclick="openTransferModal(${t.id})" title="Traiter">
+                                    <i class="fas fa-gavel"></i>
+                                </button>
+                            ` : '-'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // View user details
+        async function viewUser(userId) {
+            const token = checkAuth();
+            if (!token) return;
+            
+            selectedUserId = userId;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    
+                    document.getElementById('userDetails').innerHTML = `
+                        <div class="info-item">
+                            <div class="info-label">Nom complet</div>
+                            <div class="info-value">${user.lastName} ${user.firstName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">${user.email}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Téléphone</div>
+                            <div class="info-value masked" onclick="this.classList.toggle('revealed')">${user.phone}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date de naissance</div>
+                            <div class="info-value">${user.birthDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Adresse</div>
+                            <div class="info-value">${user.address}, ${user.postalCode} ${user.city}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Nationalité</div>
+                            <div class="info-value">${user.nationality}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Numéro de compte</div>
+                            <div class="info-value masked" onclick="this.classList.toggle('revealed')">${user.accountNumber}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">IBAN</div>
+                            <div class="info-value masked" onclick="this.classList.toggle('revealed')">${user.iban}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Solde</div>
+                            <div class="info-value">${parseFloat(user.balance).toFixed(2)} €</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Statut</div>
+                            <div class="info-value">${user.isActive ? 'Actif' : 'En attente de vérification'}</div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('userDocuments').innerHTML = `
+                        <h4 style="margin-bottom: 15px; color: var(--primary);">Documents</h4>
+                        ${user.documents.length > 0 ? user.documents.map(d => `
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-icon">
+                                        <i class="fas fa-file"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600;">${d.type.replace('_', ' ').toUpperCase()}</div>
+                                        <div style="font-size: 0.85rem; color: var(--gray);">${d.fileName}</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="downloadDocument(${d.id})">
+                                    <i class="fas fa-download"></i>
+                                    Télécharger
+                                </button>
+                            </div>
+                        `).join('') : '<p style="color: var(--gray);">Aucun document téléversé</p>'}
+                    `;
+                    
+                    document.getElementById('verifyBtn').style.display = user.isActive ? 'none' : 'inline-flex';
+                    
+                    document.getElementById('userModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading user details:', error);
+            }
+        }
+        
+        async function verifyUser() {
+            const token = checkAuth();
+            if (!token || !selectedUserId) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${selectedUserId}/verify`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    showAlert('userSuccessAlert', 'Compte vérifié avec succès!');
+                    loadUsers();
+                    setTimeout(() => closeModal('userModal'), 1500);
+                } else {
+                    const result = await response.json();
+                    showAlert('userErrorAlert', result.error || 'Erreur');
+                }
+            } catch (error) {
+                showAlert('userErrorAlert', 'Erreur de connexion');
+            }
+        }
+        
+        function openCreditModal() {
+            closeModal('userModal');
+            document.getElementById('creditModal').classList.add('active');
+        }
+        
+        async function creditAccount() {
+            const token = checkAuth();
+            if (!token || !selectedUserId) return;
+            
+            const amount = parseFloat(document.getElementById('creditAmount').value);
+            const description = document.getElementById('creditDescription').value;
+            
+            if (!amount || amount <= 0) {
+                showAlert('creditErrorAlert', 'Montant invalide');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${selectedUserId}/credit`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount, description })
+                });
+                
+                if (response.ok) {
+                    showAlert('creditSuccessAlert', 'Compte crédité avec succès!');
+                    loadUsers();
+                    loadStats();
+                    setTimeout(() => closeModal('creditModal'), 1500);
+                } else {
+                    const result = await response.json();
+                    showAlert('creditErrorAlert', result.error || 'Erreur');
+                }
+            } catch (error) {
+                showAlert('creditErrorAlert', 'Erreur de connexion');
+            }
+        }
+        
+        function downloadDocument(docId) {
+            const token = checkAuth();
+            window.open(`${API_URL}/admin/documents/${docId}/download?token=${token}`, '_blank');
+        }
+        
+        // Transfer actions
+        function openTransferModal(transferId) {
+            selectedTransferId = transferId;
+            const transfer = allTransfers.find(t => t.id === transferId);
+            
+            if (transfer) {
+                document.getElementById('transferDetails').innerHTML = `
+                    <p><strong>Référence:</strong> ${transfer.reference}</p>
+                    <p><strong>Montant:</strong> ${parseFloat(transfer.amount).toFixed(2)} €</p>
+                    <p><strong>Client:</strong> ${transfer.fromUser}</p>
+                    <p><strong>Bénéficiaire:</strong> ${transfer.beneficiaryName}</p>
+                    <p><strong>IBAN:</strong> ${transfer.beneficiaryIban}</p>
+                `;
+                document.getElementById('rejectionReasonGroup').style.display = 'none';
+                document.getElementById('transferActionModal').classList.add('active');
+            }
+        }
+        
+        function showRejectionReason() {
+            document.getElementById('rejectionReasonGroup').style.display = 'block';
+        }
+        
+        async function approveTransfer() {
+            await processTransfer('approve');
+        }
+        
+        async function processTransfer(action) {
+            const token = checkAuth();
+            if (!token || !selectedTransferId) return;
+            
+            const reason = action === 'reject' ? document.getElementById('rejectionReason').value : '';
+            
+            if (action === 'reject' && !reason) {
+                showAlert('transferErrorAlert', 'Veuillez indiquer un motif de refus');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/transfers/${selectedTransferId}/process`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action, reason })
+                });
+                
+                if (response.ok) {
+                    showAlert('transferSuccessAlert', action === 'approve' ? 'Virement approuvé!' : 'Virement refusé!');
+                    loadTransfers();
+                    loadStats();
+                    setTimeout(() => closeModal('transferActionModal'), 1500);
+                } else {
+                    const result = await response.json();
+                    showAlert('transferErrorAlert', result.error || 'Erreur');
+                }
+            } catch (error) {
+                showAlert('transferErrorAlert', 'Erreur de connexion');
+            }
+        }
+        
+        // Navigation
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            if (section === 'dashboard') {
+                document.getElementById('dashboard-section').classList.add('active');
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (section === 'users') {
+                document.getElementById('users-section').classList.add('active');
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                loadUsers();
+            } else if (section === 'transfers') {
+                document.getElementById('transfers-section').classList.add('active');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                loadTransfers();
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.querySelectorAll(`#${modalId} .alert`).forEach(a => a.style.display = 'none');
+        }
+        
+        function showAlert(elementId, message) {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.style.display = 'block';
+        }
+        
+        function refreshData() {
+            loadStats();
+            loadUsers();
+            loadTransfers();
+        }
+        
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('admin');
+            window.location.href = 'admin-login.html';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadStats();
+        });
+    </script>
+</body>
+</html>

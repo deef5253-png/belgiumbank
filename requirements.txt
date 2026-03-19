@@ -1,0 +1,11 @@
+flask==3.0.0
+flask-cors==4.0.0
+flask-jwt-extended==4.5.3
+werkzeug==3.0.1
+bcrypt==4.1.2
+sqlite3-utils==3.34
+python-dotenv==1.0.0
+email-validator==2.1.0
+requests==2.31.0
+cryptography==41.0.7
+pillow==10.2.0

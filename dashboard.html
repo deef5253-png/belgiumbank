@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Belgium Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #003366;
+            --primary-light: #004080;
+            --secondary: #00a8e8;
+            --accent: #ffd700;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--primary);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+        
+        .user-info {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--accent);
+        }
+        
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-size: 1.75rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+        
+        .card-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .account-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Transfer Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Transactions Table */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-en_attente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-en_cours {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-valide {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-refuse {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .amount-positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .amount-negative {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <span>Belgium Bank</span>
+            </div>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-name" id="userName">Chargement...</div>
+            <div class="user-email" id="userEmail">...</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Tableau de bord</span>
+            </div>
+            <div class="nav-item" onclick="showSection('transfer')">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Nouveau virement</span>
+            </div>
+            <div class="nav-item" onclick="showSection('history')">
+                <i class="fas fa-history"></i>
+                <span>Historique</span>
+            </div>
+            <div class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <div class="header">
+                <h1>Tableau de bord</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openTransferModal()">
+                        <i class="fas fa-plus"></i>
+                        Nouveau virement
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card balance-card">
+                    <div class="card-label">Solde disponible</div>
+                    <div class="balance-amount" id="balance">0.00 €</div>
+                    <div class="account-info" id="accountInfo">BE** **** **** ****</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">IBAN</span>
+                        <div class="card-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="ibanDisplay" style="font-size: 1rem;">BE** **** **** ****</div>
+                    <div class="stat-label">BIC: BBRU BE BB</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Virements en attente</span>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="pendingCount">0</div>
+                    <div class="stat-label">À traiter</div>
+                </div>
+            </div>
+            
+            <div class="content-section active">
+                <div class="section-header">
+                    <h3 class="section-title">Dernières transactions</h3>
+                    <button class="btn btn-primary" onclick="showSection('history')">
+                        Voir tout
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTransactions">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 30px; color: var(--gray);">
+                                    Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Transfer Section -->
+        <div id="transfer-section" class="content-section">
+            <div class="section-header">
+                <h3 class="section-title">Nouveau virement</h3>
+            </div>
+            
+            <div class="alert alert-danger" id="transferError"></div>
+            <div class="alert alert-success" id="transferSuccess"></div>
+            
+            <form id="transferForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Montant (EUR)</label>
+                        <input type="number" id="transferAmount" class="form-control" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nom du bénéficiaire</label>
+                        <input type="text" id="beneficiaryName" class="form-control" placeholder="Nom complet" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>IBAN du bénéficiaire</label>
+                        <input type="text" id="beneficiaryIban" class="form-control" placeholder="BE00 0000 0000 0000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>BIC (optionnel)</label>
+                        <input type="text" id="beneficiaryBic" class="form-control" placeholder="AAAA BB CC">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Description / Communication</label>
+                        <input type="text" id="transferDescription" class="form-control" placeholder="Motif du virement" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-paper-plane"></i>
+                            Envoyer le virement
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- History Section -->
+        <div id="history-section" class="content-section">
+            <div class="section-header">
+                <h3 class="section-title">Historique des transactions</h3>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Référence</th>
+                            <th>Description</th>
+                            <th>Bénéficiaire</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allTransactions">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">
+                                Chargement...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Transfer Modal -->
+    <div class="modal" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nouveau virement</h3>
+                <button class="modal-close" onclick="closeTransferModal()">&times;</button>
+            </div>
+            
+            <div class="alert alert-danger" id="modalError"></div>
+            
+            <form id="modalTransferForm">
+                <div class="form-group">
+                    <label>Montant (EUR)</label>
+                    <input type="number" id="modalAmount" class="form-control" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nom du bénéficiaire</label>
+                    <input type="text" id="modalBeneficiaryName" class="form-control" placeholder="Nom complet" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>IBAN du bénéficiaire</label>
+                    <input type="text" id="modalBeneficiaryIban" class="form-control" placeholder="BE00 0000 0000 0000" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="modalDescription" class="form-control" placeholder="Motif du virement" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+                    <i class="fas fa-paper-plane"></i>
+                    Confirmer le virement
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://5000-dae256e2-ed1e-4f15-9078-0dfb3e01cf27.daytonaproxy01.net/api';
+        let currentUser = null;
+        let userAccount = null;
+        
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return token;
+        }
+        
+        // Load user data
+        async function loadUserData() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/account`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    userAccount = data;
+                    
+                    document.getElementById('userName').textContent = `${data.firstName} ${data.lastName}`;
+                    document.getElementById('balance').textContent = `${parseFloat(data.balance).toFixed(2)} €`;
+                    document.getElementById('accountInfo').textContent = data.accountNumber;
+                    document.getElementById('ibanDisplay').textContent = data.iban;
+                    
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    if (user) {
+                        document.getElementById('userEmail').textContent = user.email;
+                    }
+                } else {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+        
+        // Load transactions
+        async function loadTransactions() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/transfers`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const transactions = await response.json();
+                    displayTransactions(transactions);
+                    
+                    // Count pending
+                    const pending = transactions.filter(t => t.status === 'en_attente').length;
+                    document.getElementById('pendingCount').textContent = pending;
+                }
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+            }
+        }
+        
+        function displayTransactions(transactions) {
+            const recentTbody = document.getElementById('recentTransactions');
+            const allTbody = document.getElementById('allTransactions');
+            
+            if (transactions.length === 0) {
+                const emptyMessage = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--gray);">Aucune transaction</td></tr>';
+                recentTbody.innerHTML = emptyMessage;
+                allTbody.innerHTML = emptyMessage;
+                return;
+            }
+            
+            const formatDate = (dateStr) => {
+                return new Date(dateStr).toLocaleDateString('fr-BE');
+            };
+            
+            const getStatusClass = (status) => {
+                const statusMap = {
+                    'en_attente': 'status-en_attente',
+                    'en_cours': 'status-en_cours',
+                    'valide': 'status-valide',
+                    'refuse': 'status-refuse'
+                };
+                return statusMap[status] || '';
+            };
+            
+            const getStatusLabel = (status) => {
+                const statusMap = {
+                    'en_attente': 'En attente',
+                    'en_cours': 'En cours',
+                    'valide': 'Validé',
+                    'refuse': 'Refusé'
+                };
+                return statusMap[status] || status;
+            };
+            
+            const createRow = (t) => {
+                const amountClass = t.isOutgoing ? 'amount-negative' : 'amount-positive';
+                const amountPrefix = t.isOutgoing ? '-' : '+';
+                return `
+                    <tr>
+                        <td>${formatDate(t.createdAt)}</td>
+                        <td>${t.reference || '-'}</td>
+                        <td>${t.description || '-'}</td>
+                        <td>${t.counterparty || '-'}</td>
+                        <td class="${amountClass}">${amountPrefix}${parseFloat(t.amount).toFixed(2)} €</td>
+                        <td><span class="status ${getStatusClass(t.status)}">${getStatusLabel(t.status)}</span></td>
+                    </tr>
+                `;
+            };
+            
+            // Recent transactions (last 5)
+            recentTbody.innerHTML = transactions.slice(0, 5).map(t => `
+                <tr>
+                    <td>${formatDate(t.createdAt)}</td>
+                    <td>${t.description || '-'}</td>
+                    <td class="${t.isOutgoing ? 'amount-negative' : 'amount-positive'}">
+                        ${t.isOutgoing ? '-' : '+'}${parseFloat(t.amount).toFixed(2)} €
+                    </td>
+                    <td><span class="status ${getStatusClass(t.status)}">${getStatusLabel(t.status)}</span></td>
+                </tr>
+            `).join('');
+            
+            // All transactions
+            allTbody.innerHTML = transactions.map(createRow).join('');
+        }
+        
+        // Navigation
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            // Show selected section
+            if (section === 'dashboard') {
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (section === 'transfer') {
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('transfer-section').classList.add('active');
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            } else if (section === 'history') {
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('history-section').classList.add('active');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            }
+        }
+        
+        // Transfer modal
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.add('active');
+        }
+        
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.remove('active');
+            document.getElementById('modalTransferForm').reset();
+        }
+        
+        // Submit transfer
+        async function submitTransfer(formData) {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/transfer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    return { success: true, message: result.message };
+                } else {
+                    return { success: false, error: result.error };
+                }
+            } catch (error) {
+                return { success: false, error: 'Erreur de connexion' };
+            }
+        }
+        
+        // Form submissions
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                amount: parseFloat(document.getElementById('transferAmount').value),
+                beneficiaryName: document.getElementById('beneficiaryName').value,
+                beneficiaryIban: document.getElementById('beneficiaryIban').value,
+                beneficiaryBic: document.getElementById('beneficiaryBic').value,
+                description: document.getElementById('transferDescription').value
+            };
+            
+            const result = await submitTransfer(data);
+            
+            const errorAlert = document.getElementById('transferError');
+            const successAlert = document.getElementById('transferSuccess');
+            
+            if (result.success) {
+                successAlert.textContent = result.message;
+                successAlert.style.display = 'block';
+                errorAlert.style.display = 'none';
+                document.getElementById('transferForm').reset();
+                loadTransactions();
+                setTimeout(() => successAlert.style.display = 'none', 5000);
+            } else {
+                errorAlert.textContent = result.error;
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('modalTransferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                amount: parseFloat(document.getElementById('modalAmount').value),
+                beneficiaryName: document.getElementById('modalBeneficiaryName').value,
+                beneficiaryIban: document.getElementById('modalBeneficiaryIban').value,
+                description: document.getElementById('modalDescription').value
+            };
+            
+            const result = await submitTransfer(data);
+            
+            const errorAlert = document.getElementById('modalError');
+            
+            if (result.success) {
+                closeTransferModal();
+                loadTransactions();
+                showSection('history');
+                alert('Virement soumis avec succès!');
+            } else {
+                errorAlert.textContent = result.error;
+                errorAlert.style.display = 'block';
+            }
+        });
+        
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadTransactions();
+        });
+    </script>
+</body>
+</html>
